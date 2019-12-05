@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.paymentOrder.Name }}
+  name: {{ .Values.batchsimulator.Name }}
+  namespace: {{ .Values.paymentOrder.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.paymentOrder.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.paymentOrder.Name }}
+    spec:
+      containers:
+      #batchsimulator    
+      - name: {{ .Values.batchsimulator.Name }}
+        image: {{ .Values.batchsimulator.Image }}
+        imagePullPolicy: {{ .Values.batchsimulator.PullPolicy }}
+        ports:
+        - containerPort: {{ .Values.batchsimulator.ContainerPort }}
+        resources: {}
+        volumeMounts:
+        - mountPath: /tmp/logs
+          name: {{ .Values.paymentOrder.Name }}-vol
+        env:
+        - name: PROFILE
+          value: {{ .Values.paymentOrder.Profile }}
+        - name: bootstrap-servers
+          value: "{{ .Values.hostIP }}:{{ .Values.kafka.kafkaPort }}"
+        - name: EUREKA_URL
+          value: "{{ .Values.paymentOrder.EUREKA_URL }}"
+        - name: LOG_PATH
+          value: "{{ .Values.paymentOrder.LOG_PATH }}"
+        - name: ZIPKIN_URL
+          value: "{{ .Values.paymentOrder.ZIPKIN_URL }}"
+      restartPolicy: Always
+      volumes:
+      - name: {{ .Values.paymentOrder.Name }}-vol
+        emptyDir: {}

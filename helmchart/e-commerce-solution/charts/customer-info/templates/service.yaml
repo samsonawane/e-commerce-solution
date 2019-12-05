@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "futuredatedscheduler.fullname" . }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ template "futuredatedscheduler.name" . }}
+    chart: {{ template "futuredatedscheduler.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.type }}
+  ports:
+  - name: {{ .Values.Name }}-port
+    port: {{ .Values.ContainerPort }}
+    protocol: TCP
+    targetPort: {{ .Values.ContainerPort }}
+    nodePort: {{ .Values.Port }}
+  selector:
+    app: {{ template "futuredatedscheduler.name" . }}
+    release: {{ .Release.Name }}

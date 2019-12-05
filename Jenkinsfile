@@ -31,7 +31,7 @@ timestamps {
         	echo """lstChangedModules - ${lstChangedModules}"""
 			echo commit_username
 			echo commit_Email
-			//print payment-order modules
+			//print e-commerce-solution modules
 			for(j=0; j<module.size();j++)
 			{
 				i=j+1
@@ -132,6 +132,43 @@ timestamps {
     		currentBuild.result='FAILURE'
     		//logJIRATicket(currentBuild.result,  "At Stage Build	", props['JIRAprojectid'], props['JIRAissuetype'], commit_Email, props['JIRAissuereporter'])
     		notifyBuild(currentBuild.result, "At Stage Build", "", commit_Email)
+    		throw e
+    	}
+    }
+	stage ('Deploy to Kubernetes Cluster')
+    { 
+        try {
+			def addSubChart='',isdeployment=false;
+			for(j=0; j<module.size();j++)
+			{
+				i=j+1
+				if ((lstChangedModules.find{ it == module[j]}) || (lstChangedModules.find{ it == "all"}))
+				{
+					isdeployment=true;
+					echo """Module ${i} - ${module[j]}"""
+					imageName="""${props['docker.registry']}/${module[j]}:${apiversion}"""
+					sh """imageName='  Image: "${imageName}"'
+					findstr='  Image: "${module[j]}ImageName"'
+					sed -i "s|\$findstr|\$imageName|g" helmchart/e-commerce-solution/values.yaml"""
+					if (addSubChart == '')
+					{
+						addSubChart = "helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
+					}
+					else
+					{
+						addSubChart = addSubChart + "\nhelmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
+					}
+				}
+			}
+			if (isdeployment)
+			{
+				sh """sed -i "s|kubernetesnamespace|${props['kubernetesnamespace']}|g" helmchart/e-commerce-solution/values.yaml"""
+			}				
+        }
+    	catch (e) {
+    		currentBuild.result='FAILURE'
+    		//logJIRATicket(currentBuild.result, "At Stage Deploy", props['JIRAprojectid'], props['JIRAissuetype'], commit_Email, props['JIRAissuereporter'])
+    		notifyBuild(currentBuild.result, "At Stage Deploy", "", commit_Email)
     		throw e
     	}
     }
