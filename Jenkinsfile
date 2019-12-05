@@ -140,11 +140,11 @@ timestamps {
     { 
         try {
 			def addSubChart='',isdeployment=false;
-			sh """mkdir helmchart_deploy helmchart_deploy/e-commerce-solution
-					cd helmchart/e-commerce-solution
-					cp -vr values.yaml \
-					templates/ \
-					Chart.yaml ../../helmchart_deploy/e-commerce-solution/"""
+			// sh """mkdir helmchart_deploy helmchart_deploy/e-commerce-solution
+			// 		cd helmchart/e-commerce-solution
+			// 		cp -vr values.yaml \
+			// 		templates/ \
+			// 		Chart.yaml ../../helmchart_deploy/e-commerce-solution/"""
 			for(j=0; j<module.size();j++)
 			{
 				i=j+1
@@ -156,21 +156,49 @@ timestamps {
 					sh """imageName='  Image: "${imageName}"'
 					findstr='  Image: "${module[j]}ImageName"'
 					sed -i "s|\$findstr|\$imageName|g" helmchart_deploy/e-commerce-solution/values.yaml
-					cp -vr helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/ helmchart_deploy/e-commerce-solution/charts/					helmchart_deploy
 					"""
-					// if (addSubChart == '')
-					// {
-					// 	addSubChart = "helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
-					// }
-					// else
-					// {
-					// 	addSubChart = addSubChart + "\nhelmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
-					// }
+					//cp -vr helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/* helmchart_deploy/e-commerce-solution/charts/
+					if (addSubChart == '')
+					{
+						addSubChart = "helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
+					}
+					else
+					{
+						addSubChart = addSubChart + "\nhelmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
+					}
 				}
 			}
 			if (isdeployment)
 			{
 				sh """sed -i "s|kubernetesnamespace|${props['kubernetesnamespace']}|g" helmchart_deploy/e-commerce-solution/values.yaml"""
+		// 		step([$class: 'UCDeployPublisher',
+		// 			siteName: 'local',
+		// 			component: [
+		// 				$class: 'com.urbancode.jenkins.plugins.ucdeploy.VersionHelper$VersionBlock',
+		// 				componentName: """${JOB_NAME}""", 
+		// 				delivery: [
+		// 					$class: 'com.urbancode.jenkins.plugins.ucdeploy.DeliveryHelper$Push',
+		// 					pushVersion: """${JOB_NAME}_${BUILD_NUMBER}_${BUILD_TIMESTAMP}""",
+		// 					baseDir: """${workspace}""",
+		// 					fileIncludePatterns: """deploy.properties
+		// 											helmchart/${JOB_NAME}/templates/**/*
+		// 											helmchart/${JOB_NAME}/Chart.yaml
+		// 											helmchart/${JOB_NAME}/values.yaml
+		// 											${addSubChart}""",
+		// 					fileExcludePatterns: '',
+		// 					pushDescription: """Build for ${JOB_NAME} ON  :${BUILD_TIMESTAMP}""",
+		// 					pushIncremental: false
+		// 					]
+		// 			],
+		// 			deploy: [
+		// 				$class: 'com.urbancode.jenkins.plugins.ucdeploy.DeployHelper$DeployBlock',
+		// 				deployApp: """${JOB_NAME}""",
+		// 				deployEnv: """${props['deploy.defaultEnvironment']}""",
+		// 				deployProc: """${appDeployProcess}""",
+		// 				deployVersions: """${JOB_NAME}:${JOB_NAME}_${BUILD_NUMBER}_${BUILD_TIMESTAMP}""",
+		// 				deployOnlyChanged: true
+		// 			]
+		// 		])
 			}				
         }
     	catch (e) {
