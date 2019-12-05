@@ -140,7 +140,7 @@ timestamps {
     { 
         try {
 			def addSubChart='',isdeployment=false;
-			sh """mkdir helmchart_deploy/e-commerce-solution
+			sh """mkdir helmchart_deploy helmchart_deploy/e-commerce-solution
 					cd helmchart/e-commerce-solution
 					cp -vr values.yaml \
 					templates/ \
