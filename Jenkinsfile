@@ -144,8 +144,7 @@ timestamps {
 					cd helmchart/e-commerce-solution
 					cp -vr values.yaml \
 					templates/ \
-					Chart.yaml 
-					../../helmchart_deploy/e-commerce-solution/"""
+					Chart.yaml ../../helmchart_deploy/e-commerce-solution/"""
 			for(j=0; j<module.size();j++)
 			{
 				i=j+1
