@@ -94,5 +94,5 @@ def buildModule(String moduleName, String dockerRegistry, String apiversion)
 }
 def dockerPush(String imageName)
 {
-	sh """sudo docker push ${imageName}"""
+	//sh """sudo docker push ${imageName}"""
 }
