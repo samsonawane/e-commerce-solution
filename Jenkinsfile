@@ -258,9 +258,8 @@ def logJIRATicket(String buildStatus, String buildFailedAt, String projectid, St
 }
 def buildModule(String moduleName, String branchName, String dockerRegistry)
 {
-	build job: """payment-order-${moduleName}""", 
-	parameters: [string(name: 'branchName', value: branchName), 
-				string(name: 'moduleName', value: moduleName),
+	build job: """e-commerce-solution-${moduleName}""", 
+	parameters: [string(name: 'moduleName', value: moduleName),
 				string(name: 'dockerRegistry', value: dockerRegistry)]
 }
 /*get changed files path from the cahngeset(commits)*/

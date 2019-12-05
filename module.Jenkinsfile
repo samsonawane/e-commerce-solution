@@ -1,4 +1,3 @@
-
 def pomfile, apiversion, imageName;
 node  
 {
@@ -49,11 +48,11 @@ node
 		{ 
 		try
 			{
-				def scannerHome = tool 'sonar-runner';
+				/*def scannerHome = tool 'sonar-runner';
 				withSonarQubeEnv('Dockersonar') 
 				{
 					codeCoverage("""${moduleName}""", scannerHome, """${Dockersonar}""")
-				}
+				} */
 			}
 			catch (e) {
 				throw e
@@ -84,7 +83,8 @@ def codeCoverage(String moduleName, String scannerHome, String sonarHosturl)
 def buildModule(String moduleName, String dockerRegistry, String apiversion)
 {
 	echo """docker image build for Module - ${moduleName}"""
-	imageName="""${dockerRegistry}/${moduleName}:${apiversion}"""
+	//imageName="""${dockerRegistry}/${moduleName}:${apiversion}"""
+	imageName="""${moduleName}:${apiversion}"""
 	sh """cd ${moduleName}
 	#mvn clean test -U
 	#mvn clean test -U -Dmaven.test.skip=true
