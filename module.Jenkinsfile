@@ -18,10 +18,10 @@ node
 					throw error
 				}
 		}
-		/* 
+		 
 		stage ('Static Code Analysis')
 		{ 
-			try
+		/*	try
 			{
 				def scannerHome = tool 'sonar-runner';
 				withSonarQubeEnv('Dockersonar') 
@@ -32,8 +32,8 @@ node
 			}
 			catch (e) {
 				throw e
-			}
-		}*/
+			}*/
+		}
 		stage ('Build & Package')
 		{ 
 			try
