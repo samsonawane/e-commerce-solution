@@ -68,6 +68,7 @@ timestamps {
     {  
     	try
 		{
+			echo "check environment"
 			/* def zipkinstatus=sh(returnStdout: true, script: """curl -s ${props['ZipkinURL']}/health | jq '.status' | tr -d '"' """).trim();
 			echo """Zipkin status is - ${zipkinstatus}"""
 			def kibanastatus=sh(returnStdout: true, script: """curl -s ${props['KibanaURL']}/api/status | jq '.status.overall.state' | tr -d '"' """).trim();
@@ -139,6 +140,7 @@ timestamps {
     { 
         try {
 			def addSubChart='',isdeployment=false;
+			sh "mkdir helmchart_deploy"
 			for(j=0; j<module.size();j++)
 			{
 				i=j+1
@@ -149,15 +151,21 @@ timestamps {
 					imageName="""${props['docker.registry']}/${module[j]}:${apiversion}"""
 					sh """imageName='  Image: "${imageName}"'
 					findstr='  Image: "${module[j]}ImageName"'
-					sed -i "s|\$findstr|\$imageName|g" helmchart/e-commerce-solution/values.yaml"""
-					if (addSubChart == '')
-					{
-						addSubChart = "helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
-					}
-					else
-					{
-						addSubChart = addSubChart + "\nhelmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
-					}
+					sed -i "s|\$findstr|\$imageName|g" helmchart/e-commerce-solution/values.yaml
+					cp helmchart/e-commerce-solution/values.yaml \
+					helmchart/e-commerce-solution/templates/**/* \
+					helmchart/e-commerce-solution/Chart.yaml \
+					helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/* \
+					helmchart_deploy
+					"""
+					// if (addSubChart == '')
+					// {
+					// 	addSubChart = "helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
+					// }
+					// else
+					// {
+					// 	addSubChart = addSubChart + "\nhelmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
+					// }
 				}
 			}
 			if (isdeployment)
@@ -175,6 +183,7 @@ timestamps {
 	stage ('Validate Microservice Deployment')
     { 
         try {
+			echo "validate environment"
 				/* sleep 120
 				//def chkmicroservice=sh(returnStdout: true, script: """curl -s http://${props['environment.URL']}:${props['app.port']}/health | jq '.status' | tr -d '"' """).trim();
 				
@@ -243,6 +252,7 @@ timestamps {
     stage ('Log JIRA Ticket for Code Promotion')
     {
         try {
+			echo "log JIRA for Code promotion"
             //logJIRATicket('SUCCESS', "At Stage Log JIRA Ticket", props['JIRAprojectid'], props['JIRAissuetype'], commit_Email, props['JIRAissuereporter'])
     	}
     	catch (e) {
@@ -267,7 +277,7 @@ def notifyBuild(String buildStatus, String buildFAILUREAt,String bodyDetails,Str
 		msgcolor='#3eb991'
 		}
 	detials="""${JOB_NAME}: ${buildStatus} ${buildFAILUREAt}		Initiated by: ${commit_username}  \n\n Please Check build logs at :-${BUILD_URL}"""
-			slackSend color: msgcolor, baseUrl: 'https://ibm-dip.slack.com/services/hooks/jenkins-ci/', channel: '#dbs', message: detials, token: 'TQ4I97X8ouGnWWTGbkyaWwWj'
+			slackSend color: msgcolor, baseUrl: 'https://bcg.slack.com/services/hooks/jenkins-ci/', channel: '#dbs', message: detials, token: 'TQ4I97X8ouGnWWTGbkyaWwWj'
 	//slackSend color: msgcolor, message: detials, channel: 'dbs' */
 }
 def logJIRATicket(String buildStatus, String buildFailedAt, String projectid, String issuetype, String assignTo, String issueReporter) {
