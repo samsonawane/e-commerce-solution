@@ -7,7 +7,7 @@ timestamps {
         try
         {
             checkout scm;
-            //props = readProperties  file: """deploy.properties""";
+            props = readProperties  file: """deploy.properties""";
 			pomfile = readMavenPom file: '';
 			workspace = pwd ();
 			//branchName=sh(returnStdout: true, script: 'git symbolic-ref --short HEAD').trim();
@@ -135,71 +135,6 @@ timestamps {
     		throw e
     	}
     }
-    stage ('Deploy to IBM Cloud Private')
-    { 
-        // try {
-		// 	def addSubChart='',isdeployment=false;
-		// 	for(j=0; j<module.size();j++)
-		// 	{
-		// 		i=j+1
-		// 		if ((lstChangedModules.find{ it == module[j]}) || (lstChangedModules.find{ it == "all"}))
-		// 		{
-		// 			isdeployment=true;
-		// 			echo """Module ${i} - ${module[j]}"""
-		// 			imageName="""${props['docker.registry']}/${module[j]}:${apiversion}"""
-		// 			sh """imageName='  Image: "${imageName}"'
-		// 			findstr='  Image: "${module[j]}ImageName"'
-		// 			sed -i "s|\$findstr|\$imageName|g" helmchart/payment-order/values.yaml"""
-		// 			if (addSubChart == '')
-		// 			{
-		// 				addSubChart = "helmchart/payment-order/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
-		// 			}
-		// 			else
-		// 			{
-		// 				addSubChart = addSubChart + "\nhelmchart/payment-order/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/*"
-		// 			}
-		// 		}
-		// 	}
-		// 	if (isdeployment)
-		// 	{
-		// 		sh """sed -i "s|kubernetesnamespace|${props['kubernetesnamespace']}|g" helmchart/payment-order/values.yaml"""
-		// 		step([$class: 'UCDeployPublisher',
-		// 			siteName: 'local',
-		// 			component: [
-		// 				$class: 'com.urbancode.jenkins.plugins.ucdeploy.VersionHelper$VersionBlock',
-		// 				componentName: """${JOB_NAME}""", 
-		// 				delivery: [
-		// 					$class: 'com.urbancode.jenkins.plugins.ucdeploy.DeliveryHelper$Push',
-		// 					pushVersion: """${JOB_NAME}_${BUILD_NUMBER}_${BUILD_TIMESTAMP}""",
-		// 					baseDir: """${workspace}""",
-		// 					fileIncludePatterns: """deploy.properties
-		// 											helmchart/${JOB_NAME}/templates/**/*
-		// 											helmchart/${JOB_NAME}/Chart.yaml
-		// 											helmchart/${JOB_NAME}/values.yaml
-		// 											${addSubChart}""",
-		// 					fileExcludePatterns: '',
-		// 					pushDescription: """Build for ${JOB_NAME} ON  :${BUILD_TIMESTAMP}""",
-		// 					pushIncremental: false
-		// 					]
-		// 			],
-		// 			deploy: [
-		// 				$class: 'com.urbancode.jenkins.plugins.ucdeploy.DeployHelper$DeployBlock',
-		// 				deployApp: """${JOB_NAME}""",
-		// 				deployEnv: """${props['deploy.defaultEnvironment']}""",
-		// 				deployProc: """${appDeployProcess}""",
-		// 				deployVersions: """${JOB_NAME}:${JOB_NAME}_${BUILD_NUMBER}_${BUILD_TIMESTAMP}""",
-		// 				deployOnlyChanged: true
-		// 			]
-		// 		])
-		// 	}				
-        // }
-    	// catch (e) {
-    	// 	currentBuild.result='FAILURE'
-    	// 	//logJIRATicket(currentBuild.result, "At Stage Deploy", props['JIRAprojectid'], props['JIRAissuetype'], commit_Email, props['JIRAissuereporter'])
-    	// 	notifyBuild(currentBuild.result, "At Stage Deploy", "", commit_Email)
-    	// 	throw e
-    	// }
-    }
 	stage ('Validate Microservice Deployment')
     { 
         try {
@@ -271,7 +206,7 @@ timestamps {
     stage ('Log JIRA Ticket for Code Promotion')
     {
         try {
-            logJIRATicket('SUCCESS', "At Stage Log JIRA Ticket", props['JIRAprojectid'], props['JIRAissuetype'], commit_Email, props['JIRAissuereporter'])
+            //logJIRATicket('SUCCESS', "At Stage Log JIRA Ticket", props['JIRAprojectid'], props['JIRAissuetype'], commit_Email, props['JIRAissuereporter'])
     	}
     	catch (e) {
     		currentBuild.result='FAILURE'
