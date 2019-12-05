@@ -37,7 +37,7 @@ timestamps {
 				i=j+1
 				echo """Module ${i} - ${module[j]}"""
 			}
-			switch(props['api.deploy.type'].trim().toUpperCase()) 
+			/*switch(props['api.deploy.type'].trim().toUpperCase()) 
 			{ 
 				case "CF":
 					appDeployProcess="Deploy_cf"
@@ -49,7 +49,7 @@ timestamps {
 				echo "java api can deployed on 'CF' or 'CN', \n Please provide valid deployment type."
 					error("")
 					break;
-			}
+			}*/
         }
     	catch (e) {
     		currentBuild.result='FAILURE'
