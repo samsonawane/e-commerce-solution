@@ -1,5 +1,5 @@
 def workspace, props='', commit_username, commit_Email, appDeployProcess, imageName='', envMessage='', pomfile='';
-def module='', apiversion, lstChangedModules='', branchName='development' ;
+def module='', apiversion, lstChangedModules='', modulesToBeDeployed='' , branchName='development' ;
 node  {
 timestamps {
     stage('Checkout Code')
