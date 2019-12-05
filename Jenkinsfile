@@ -7,7 +7,7 @@ timestamps {
         try
         {
             checkout scm;
-            props = readProperties  file: """deploy.properties""";
+            //props = readProperties  file: """deploy.properties""";
 			pomfile = readMavenPom file: '';
 			workspace = pwd ();
 			//branchName=sh(returnStdout: true, script: 'git symbolic-ref --short HEAD').trim();
@@ -285,7 +285,7 @@ timestamps {
 }
 def notifyBuild(String buildStatus, String buildFAILUREAt,String bodyDetails,String commit_username)
 {
-	buildStatus = buildStatus ?: 'SUCCESS'
+	/*buildStatus = buildStatus ?: 'SUCCESS'
 	if (buildStatus == 'FAILURE' )
 	{
 		msgcolor='#e01563'
@@ -296,10 +296,10 @@ def notifyBuild(String buildStatus, String buildFAILUREAt,String bodyDetails,Str
 		}
 	detials="""${JOB_NAME}: ${buildStatus} ${buildFAILUREAt}		Initiated by: ${commit_username}  \n\n Please Check build logs at :-${BUILD_URL}"""
 			slackSend color: msgcolor, baseUrl: 'https://ibm-dip.slack.com/services/hooks/jenkins-ci/', channel: '#dbs', message: detials, token: 'TQ4I97X8ouGnWWTGbkyaWwWj'
-	//slackSend color: msgcolor, message: detials, channel: 'dbs'
+	//slackSend color: msgcolor, message: detials, channel: 'dbs' */
 }
 def logJIRATicket(String buildStatus, String buildFailedAt, String projectid, String issuetype, String assignTo, String issueReporter) {
-	buildStatus = buildStatus ?: 'SUCCESS'
+	/*buildStatus = buildStatus ?: 'SUCCESS'
 	if (buildStatus == 'FAILURE' ){
 	String Title="""${buildStatus} ${buildFailedAt} OF ${JOB_NAME}[${BUILD_NUMBER}]"""
 	withEnv(['JIRA_SITE=JIRA-DBS']) {
@@ -319,7 +319,7 @@ def logJIRATicket(String buildStatus, String buildFailedAt, String projectid, St
 	}
 	else {
 	echo "Build is successfull, no JIRA ticket logged."
-	}
+	} */
 }
 def buildModule(String moduleName, String branchName, String dockerRegistry)
 {
