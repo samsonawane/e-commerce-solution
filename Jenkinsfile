@@ -156,7 +156,7 @@ timestamps {
 					sh """imageName='  Image: "${imageName}"'
 					findstr='  Image: "${module[j]}ImageName"'
 					sed -i "s|\$findstr|\$imageName|g" helmchart_deploy/e-commerce-solution/values.yaml
-					cp -vr helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/ helmchart_deploy/e-commerce-solution/					helmchart_deploy
+					cp -vr helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/ helmchart_deploy/e-commerce-solution/charts/					helmchart_deploy
 					"""
 					// if (addSubChart == '')
 					// {
@@ -170,7 +170,7 @@ timestamps {
 			}
 			if (isdeployment)
 			{
-				sh """sed -i "s|kubernetesnamespace|${props['kubernetesnamespace']}|g" helmchart/e-commerce-solution/values.yaml"""
+				sh """sed -i "s|kubernetesnamespace|${props['kubernetesnamespace']}|g" helmchart_deploy/e-commerce-solution/values.yaml"""
 			}				
         }
     	catch (e) {
