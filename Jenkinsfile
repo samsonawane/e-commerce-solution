@@ -140,7 +140,12 @@ timestamps {
     { 
         try {
 			def addSubChart='',isdeployment=false;
-			sh "mkdir helmchart_deploy"
+			sh """mkdir helmchart_deploy/e-commerce-solution
+					cd helmchart/e-commerce-solution
+					cp -vr values.yaml \
+					templates/ \
+					Chart.yaml 
+					../../helmchart_deploy/e-commerce-solution/"""
 			for(j=0; j<module.size();j++)
 			{
 				i=j+1
@@ -151,12 +156,8 @@ timestamps {
 					imageName="""${props['docker.registry']}/${module[j]}:${apiversion}"""
 					sh """imageName='  Image: "${imageName}"'
 					findstr='  Image: "${module[j]}ImageName"'
-					sed -i "s|\$findstr|\$imageName|g" helmchart/e-commerce-solution/values.yaml
-					cp helmchart/e-commerce-solution/values.yaml \
-					helmchart/e-commerce-solution/templates/**/* \
-					helmchart/e-commerce-solution/Chart.yaml \
-					helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/**/* \
-					helmchart_deploy
+					sed -i "s|\$findstr|\$imageName|g" helmchart_deploy/e-commerce-solution/values.yaml
+					cp -vr helmchart/e-commerce-solution/charts/${module[j].replaceAll("[^a-zA-Z0-9 ]+","")}/ helmchart_deploy/e-commerce-solution/					helmchart_deploy
 					"""
 					// if (addSubChart == '')
 					// {
